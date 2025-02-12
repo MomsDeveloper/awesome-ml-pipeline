@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix,
-    mean_absolute_error, mean_squared_error, r2_score, roc_curve
+    mean_absolute_error, mean_squared_error, r2_score, roc_curve, precision_recall_curve
 )
 
 def eval_classification(model, X_test, y_test):
@@ -20,17 +20,27 @@ def eval_classification(model, X_test, y_test):
     }
 
     # Visualize ROC-AUC
-    # fpr, tpr, threshold = roc_curve(y_test, y_proba)
-    # plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % metrics["ROC-AUC"])
-    # plt.legend(loc = 'lower right')
-    # plt.plot([0, 1], [0, 1],'r--')
-    # plt.xlim([0, 1])
-    # plt.ylim([0, 1])
-    # plt.ylabel('True Positive Rate')
-    # plt.xlabel('False Positive Rate')
-    # plt.show()
+    if y_proba is not None:
+        fpr, tpr, _ = roc_curve(y_test, y_proba)
+        plt.plot(fpr, tpr, color="blue", lw=2, label=f"ROC curve (AUC = {metrics['ROC-AUC']:.4f})")
+        plt.legend(loc = 'lower right')
+        plt.plot([0, 1], [0, 1],'r--')
+        plt.xlim([0, 1])
+        plt.ylim([0, 1])
+        plt.ylabel('True Positive Rate')
+        plt.xlabel('False Positive Rate')
+        plt.show()
 
-
+     # Visualize Precision-Recall Curve
+    if y_proba is not None:
+        precision, recall, _ = precision_recall_curve(y_test, y_proba)
+        plt.plot(recall, precision, color="green", lw=2, label="Precision-Recall curve")
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title("Precision-Recall Curve")
+        plt.legend(loc="best")
+        plt.show()
+    
     # Print metrics
     print("\nClassification Metrics:")
     for key, value in metrics.items():
