@@ -28,7 +28,7 @@ def build_pipeline(X):
         ])
 
         # Define model pipeline
-        pipeline = Pipeline([
+        pipeline = Pipeline(steps=[
             ('preprocessor', preprocessor),
             ('model', model)
         ])
